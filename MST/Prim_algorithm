@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-
+//This is Prim algorithm using matrix
 int n, m;
 int G[100][100];
 int* arr;
