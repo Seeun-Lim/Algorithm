@@ -1,0 +1,90 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+int n, m;
+int G[100][100];
+int* arr;
+int sum = 0;
+
+void initGraph() {
+	int i, j;
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) G[i][j] = -1;
+	}
+}
+
+void makeGraph(int v1,int v2,int v) {
+	G[v1 - 1][v2 - 1] = v;
+	G[v2 - 1][v1 - 1] = v;
+}
+
+int check(int arr_index, int check) {
+	int i;
+
+	for (i = 0; i < arr_index; i++) {
+		if (arr[i] == check) return 1;
+	}
+
+	return 0;
+}
+
+void findMin(int arr_index) {
+	int i, j, k;
+	int min = 1000000, min_index_i, min_index_j;
+
+	for (i = 0; i < arr_index; i++) {
+		for (j = 0; j < n; j++) {
+			if (j != arr[i]) {
+				if ((G[arr[i]][j] != -1) && (G[arr[i]][j] < min)) {
+					if (check(arr_index, j) == 0) {
+						min = G[arr[i]][j];
+						min_index_i = arr[i];
+						min_index_j = j;
+					}
+				}
+			}
+		}
+	}
+
+		arr[arr_index] = min_index_j;
+		sum += G[min_index_i][min_index_j];
+
+		//printf("<i: %d, j:%d>\n", min_index_i, min_index_j);
+
+		makeGraph(min_index_i + 1, min_index_j + 1, -1);
+}
+
+void prim() {
+	int i, j, k = 1;
+	int u;
+	int start = 0;
+	
+	arr = malloc(sizeof(int) * n);
+	arr[0] = start;
+
+	for (i = 0; i < n; i++) {
+		findMin(k);		
+		if (k == n-1) break;
+		k++;
+	}
+	for (i = 0; i < n; i++) printf(" %d", arr[i]+1);
+	printf("\n");
+	printf("%d\n", sum);
+}
+
+int main(void) {
+	int v1, v2, weight;
+	int i, j;
+
+	scanf("%d %d", &n, &m);
+
+	initGraph();
+
+	for (i = 0; i < m; i++) {
+		scanf("%d %d %d", &v1, &v2, &weight);
+		makeGraph(v1, v2, weight);
+	}
+
+    prim();
+}
